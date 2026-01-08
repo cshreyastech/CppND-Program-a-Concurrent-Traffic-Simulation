@@ -49,6 +49,10 @@ Intersection::Intersection()
   _isBlocked = false;
 }
 
+Intersection::~Intersection()
+{
+}
+
 void Intersection::addStreet(std::shared_ptr<Street> street)
 {
   _streets.push_back(street);

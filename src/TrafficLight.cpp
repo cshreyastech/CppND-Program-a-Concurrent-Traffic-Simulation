@@ -29,7 +29,7 @@ void MessageQueue<T>::send(T &&msg)
   // as well as _condition.notify_one() to add a new message to the queue and afterwards send a notification.
   std::lock_guard<std::mutex> lock(_mutex);
   _queue.clear();
-  _queue.push_back(send::move(msg));
+  _queue.push_back(std::move(msg));
   _condition.notify_one();
 }
 
@@ -40,6 +40,9 @@ void MessageQueue<T>::send(T &&msg)
 TrafficLight::TrafficLight()
 {
   _currentPhase = TrafficLightPhase::red;
+}
+TrafficLight::~TrafficLight()
+{
 }
 
 void TrafficLight::waitForGreen()
@@ -66,7 +69,7 @@ void TrafficLight::simulate()
 {
   // FP.2b : Finally, the private method „cycleThroughPhases“ should be started in a thread 
   // when the public method „simulate“ is called. To do this, use the thread queue in the base class. 
-  threads.emplace_back(std::thread(&TrafficLight::cycleThroughPhases));
+  threads.emplace_back(std::thread(&TrafficLight::cycleThroughPhases, this));
 }
 
 // virtual function which is executed in a thread
